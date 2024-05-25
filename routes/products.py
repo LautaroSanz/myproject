@@ -15,22 +15,39 @@ def add_product():
         nombre = request.form['nombre']
         marca = request.form['marca']
         precio = request.form['precio']
+        
+
+        if not isinstance(nombre, str):
+            flash('El nombre debe ser un string')
+            return redirect(url_for('products.add_product'))
+        
+        if not isinstance(marca, str):
+            flash('La marca debe ser un string')
+            return redirect(url_for('products.add_product'))
+        
+        try:
+            precio = float(precio)
+        except ValueError:
+            flash('El precio debe ser un flotante')
+            return redirect(url_for('products.home'))
+     
+     
         new_product = Productos(nombre=nombre, marca=marca, precio=precio)
         db.session.add(new_product)
         db.session.commit()
         flash('Product Added')
-        return redirect(url_for('products.home'))  # Asegúrate de tener una ruta llamada 'index.html' en tu aplicación
+        return redirect(url_for('products.home'))
 
 @products.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_product(id):
-    product = Productos.query.get_or_404(id)  # Corregido para usar el modelo Product en lugar de Productos
+    product = Productos.query.get_or_404(id)  
     if request.method == 'POST':
         product.nombre = request.form['nombre']
         product.marca = request.form['marca']
         product.precio = request.form['precio']
         db.session.commit()
         flash('Product Updated')
-        return redirect(url_for('products.home'))  # Corregido para redirigir a la vista principal del blueprint 'products'
+        return redirect(url_for('products.home'))  
     return render_template('edit-product.html', product=product)
 
 
@@ -40,4 +57,4 @@ def delete_product(id):
     db.session.delete(product)
     db.session.commit()
     flash('Product Removed Succesfully')
-    return redirect(url_for('products.home'))  # Asegúrate de tener una ruta llamada 'index.html' en tu aplicación
+    return redirect(url_for('products.home'))  

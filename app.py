@@ -5,7 +5,7 @@ def create_app():
     app = Flask(__name__)
 
     # Configuración de la base de datos
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost/productsdb'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://lau:2003mayo@localhost/productos'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Inicialización de la base de datos
