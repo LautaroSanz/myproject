@@ -5,11 +5,21 @@ from utils.db import db
 
 marcas = Blueprint('marcas', __name__)
 
-def check_marca(nombre):
+def check_marca(nombre, cantidad):
     if not isinstance(nombre, str) or not nombre.strip():
-        flash('El nombre de la marca debe ser un string no vacío')
+        flash('El nombre de la marca debe ser un string no vacío', 'error')
+        return False
+    try:
+        cantidad = int(cantidad)
+        if cantidad < 1:
+            flash('La cantidad de artículos debe ser mayor a 0', 'error')
+            return False
+    except ValueError:
+        flash('La cantidad de artículos debe ser un número entero válido', 'error')
         return False
     return True
+
+
 
 @marcas.route('/', methods=['GET'])
 def ver_marcas():
@@ -20,8 +30,9 @@ def ver_marcas():
 def add_marca():
     if request.method == 'POST':
         nombre = request.form['nombre']
-        if check_marca(nombre):
-            nueva_marca = Marca(nombre=nombre, cant_art=0)
+        cant = request.form['cant_art']
+        if check_marca(nombre, cant):
+            nueva_marca = Marca(nombre=nombre, cant_art=cant)
             db.session.add(nueva_marca)
             db.session.commit()
             flash('Marca agregada con éxito')
