@@ -29,6 +29,7 @@ def home():
     productos = Productos.query.all()
     return render_template("index.html", productos=productos)
 
+
 @products.route('/add_products', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':

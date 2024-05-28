@@ -64,36 +64,8 @@
         {% endif %}
         {% endwith %}
 
-        <form action="{{ url_for('products.add_product') }}" method="POST">
+        <form action="{{ url_for('marcas.add_marca') }}" method="POST">
             <input type="text" name="nombre" placeholder="Nombre">
-            <input type="text" name="marca" placeholder="Marca">
-            <input type="text" name="precio" placeholder="Precio">
+            <input type="text" name="cant_art" placeholder="Cant_Art">
             <button type="submit">Agregar Producto</button>
         </form>
-
-        <form action="{{ url_for('marcas.ver_marcas') }}" method="GET">
-            <button type="submit">Ver Marcas</button>
-        </form>
-
-        <!-- Lista de productos -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Marca</th>
-                    <th>Precio</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for producto in productos %}
-                <tr>
-                    <td>{{ producto.nombre }}</td>
-                    <td>{{ producto.marca }}</td>
-                    <td>{{ producto.precio }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>

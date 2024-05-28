@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Marca</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            margin: 20px auto;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <form action="/edit_marca/{{ product.id }}" method="POST">
+        <input type="text" name="nombre" placeholder="Nombre" value="{{ nombre|default(product.nombre) }}">
+        <input type="text" name="cant_art" placeholder="Cant_Art" value="{{ cant_art|default(product.marca) }}">
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>
