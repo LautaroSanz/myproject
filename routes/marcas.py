@@ -23,6 +23,7 @@ def check_marca(nombre, cantidad):
 
 @marcas.route('/', methods=['GET'])
 def ver_marcas():
+    
     marcas = Marca.query.all()
     return render_template('marcas.html', marcas=marcas)
 

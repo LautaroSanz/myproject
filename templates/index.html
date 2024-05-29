@@ -64,12 +64,19 @@
         {% endif %}
         {% endwith %}
 
-        <form action="{{ url_for('products.add_product') }}" method="POST">
-            <input type="text" name="nombre" placeholder="Nombre">
-            <input type="text" name="marca" placeholder="Marca">
-            <input type="text" name="precio" placeholder="Precio">
+        <form id="product-form" action="{{ url_for('products.add_product') }}" method="POST">
+            <input type="text" name="nombre" placeholder="Nombre" required>
+            <input type="text" name="marca" id="marca" list="marcas" placeholder="Marca" required>
+            <datalist id="marcas">
+            <!-- Aquí se cargarán las opciones de marca desde la base de datos -->
+            </datalist>
+
+            </select>
+            
+            <input type="text" name="precio" placeholder="Precio" required>
             <button type="submit">Agregar Producto</button>
         </form>
+
 
         <form action="{{ url_for('marcas.ver_marcas') }}" method="GET">
             <button type="submit">Ver Marcas</button>
@@ -90,6 +97,10 @@
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.marca }}</td>
                     <td>{{ producto.precio }}</td>
+                    <td>
+                        <a href="/edit/{{ producto.id }}">Editar</a>
+                        <a href="/delete/{{ producto.id }}">Eliminar</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -97,3 +108,33 @@
     </div>
 </body>
 </html>
+
+<script>
+// Obtener el campo de marca
+const marcaInput = document.getElementById('marca');
+const marcasDatalist = document.getElementById('marcas');
+
+// Agregar evento de entrada al campo de marca
+marcaInput.addEventListener('input', function() {
+    // Obtener el valor actual del campo de marca
+    const marcaValue = this.value;
+
+    // Realizar una solicitud AJAX para obtener las marcas que coinciden
+    fetch('/get_marcas?q=' + encodeURIComponent(marcaValue))
+        .then(response => response.json())
+        .then(data => {
+            // Limpiar las opciones anteriores
+            marcasDatalist.innerHTML = '';
+
+            // Agregar las nuevas opciones
+            data.forEach(marca => {
+                const option = document.createElement('option');
+                option.value = marca.nombre;
+                marcasDatalist.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error al obtener las marcas:', error);
+        });
+});
+</script>

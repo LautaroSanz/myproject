@@ -1,8 +1,17 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
-from models.product import Productos
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
+from models.product import Productos,Marca
 from app import db
 
 products = Blueprint('products', __name__)
+
+@products.route('/get_marcas', methods=['GET'])
+def get_marcas():
+    query = request.args.get('q', '')
+    marcas = Marca.query.filter(Marca.nombre.ilike(f'%{query}%')).all()
+    return jsonify([{'nombre': marca.nombre} for marca in marcas])
+
+
+
 
 def check(nombre, marca, precio):
     if not isinstance(nombre, str) or not nombre.strip():
@@ -37,6 +46,12 @@ def add_product():
         marca = request.form['marca']
         precio = request.form['precio']
 
+        # Verificar si la marca existe en la base de datos
+        marca_existe = Marca.query.filter_by(nombre=marca).first()
+        if not marca_existe:
+            flash('La marca seleccionada no existe')
+            return redirect(url_for('products.add_product'))
+
         if check(nombre, marca, precio):
             new_product = Productos(nombre=nombre, marca=marca, precio=float(precio))
             db.session.add(new_product)
@@ -44,9 +59,13 @@ def add_product():
             flash('Producto agregado con éxito')
             return redirect(url_for('products.home'))
         else:
-            return render_template('index.html', nombre=nombre, marca=marca, precio=precio)
+            # Obtener la lista de marcas para el template
+            marcas = Marca.query.all()
+            return render_template('index.html', nombre=nombre, marca=marca, precio=precio, marcas=marcas)
 
-    return render_template('products.home')
+    # Obtener la lista de marcas para el template
+    marcas = Marca.query.all()
+    return render_template('index.html', marcas=marcas)
 
 @products.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_product(id):
@@ -55,6 +74,12 @@ def edit_product(id):
         nombre = request.form['nombre']
         marca = request.form['marca']
         precio = request.form['precio']
+
+        marca_existe = Marca.query.filter_by(nombre=marca).first()
+        if not marca_existe:
+            flash('La marca seleccionada no existe')
+            return redirect(url_for('products.home'))
+
 
         if check(nombre, marca, precio):
             product.nombre = nombre
