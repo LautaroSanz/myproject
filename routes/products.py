@@ -33,7 +33,18 @@ def check(nombre, marca, precio):
 
     return True
 
-@products.route('/')
+
+@products.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        password = 'administrador'
+        if request.form.get('password') == password:
+            return redirect(url_for('products.home'))
+        else:
+            return render_template("login.html", error='Contraseña incorrecta')
+    return render_template("login.html")
+
+@products.route('/home')
 def home():
     productos = Productos.query.all()
     return render_template("index.html", productos=productos)
